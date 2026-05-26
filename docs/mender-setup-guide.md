@@ -345,11 +345,11 @@ journalctl -u mender-connect -f
 journalctl -u mender-client -f
 ```
 
-## Part E. General Artifact Creation Template
+## Part D. General Artifact Creation Template
 
 A reusable pattern for Script Update Module artifacts. Replace the placeholders with values for your specific artifact.
 
-### E.1 Naming Conventions
+### D.1 Naming Conventions
 
 **Format:**
 
@@ -376,7 +376,7 @@ A reusable pattern for Script Update Module artifacts. Replace the placeholders 
 | `hello-test`                   | `hello-test-v2`                |
 | `f2-diagnostic-snapshot-v1`    | `f2-diagnostic-snapshot-v2`    |
 
-### E.2 Placeholders
+### D.2 Placeholders
 
 | Placeholder     | Description                                                  | Example                                    |
 |-----------------|--------------------------------------------------------------|--------------------------------------------|
@@ -385,7 +385,7 @@ A reusable pattern for Script Update Module artifacts. Replace the placeholders 
 | `SCRIPT_PATH`   | Absolute path to the payload script on the workstation       | `~/tools/mender-test/scripts/my-script.sh` |
 | `OUTPUT_FILE`   | Output `.mender` file name                                   | `install-tool-v1.mender`                   |
 
-### E.3 Script Requirements
+### D.3 Script Requirements
 
 The payload script runs as root on the device. Requirements for Mender Client 3.5 on Ubuntu 20.04 (arm64):
 
@@ -394,7 +394,7 @@ The payload script runs as root on the device. Requirements for Mender Client 3.
 - Be idempotent where possible, as deployments can be retried or re-run
 - Do not write persistent state to `/var/lib/mender/` or modify `/etc/mender/mender.conf` directly
 
-### E.4 Workflow
+### D.4 Workflow
 
 **Step 1: Write the script**:
 
@@ -443,7 +443,7 @@ journalctl -u mender-client -f
 
 Check the side effect specific to your script (log file created, service restarted, config updated).
 
-### E.5 Worked Example: Hello Test
+### D.5 Worked Example: Hello Test
 
 A minimal script that writes a timestamped log file. Use this to confirm the OTA pipeline is working before deploying real artifacts.
 
@@ -512,7 +512,7 @@ Expected output:
 Hello World Tue May 13 18:00:00 UTC 2026
 ```
 
-### E.6 mender-artifact Flag Reference
+### D.6 mender-artifact Flag Reference
 
 Applies to `mender-artifact write module-image` as used with Mender Client 3.5 on Ubuntu 20.04 (arm64) via the Script Update Module.
 
@@ -529,7 +529,7 @@ Applies to `mender-artifact write module-image` as used with Mender Client 3.5 o
 | `--depends`          |                      | No       | Declares a dependency on a prior artifact (for chained or ordered deployments).                                |
 | `--provides`         |                      | No       | Declares a `key=value` pair in `artifact_provides` (used for dependency tracking between artifacts).           |
 
-### E.7 Multi-File Artifacts
+### D.7 Multi-File Artifacts
 
 The Script Update Module accepts multiple payload files via repeated `-f` flags. All files are deployed together and available in the module's working directory on the device at execution time.
 
@@ -574,13 +574,13 @@ mender-artifact write module-image \
 
 `ArtifactInstall_Enter_00` is the entry script that invokes `f2_diagnostic_snapshot.py`. Both files land in the same working directory on the device, so the entry script can reference the Python file by name.
 
-## Part F. Deleting an Artifact
+## Part E. Deleting an Artifact
 
 Remove an artifact from Mender Cloud and optionally clean up local files.
 
 > **Note:** Deleting an artifact does not affect devices that already installed it. It only prevents future deployments of that release. If a deployment using the artifact is still active, stop or finish it before deletion.
 
-### F.1 Delete via the Web UI
+### E.1 Delete via the Web UI
 
 1. Log in to Mender Cloud.
 2. Go to **Releases**.
@@ -589,7 +589,7 @@ Remove an artifact from Mender Cloud and optionally clean up local files.
 
 If deletion is blocked, verify that no active deployment is using the artifact.
 
-### F.2 Delete via CLI
+### E.2 Delete via CLI
 
 Authenticate if needed:
 
@@ -609,7 +609,7 @@ Delete by ID:
 mender-cli artifacts delete <artifact-ID>
 ```
 
-### F.3 Delete the Local Artifact File
+### E.3 Delete the Local Artifact File
 
 Deleting from Mender Cloud does not remove the local `.mender` file.
 
@@ -625,7 +625,7 @@ Or clean all local test artifacts:
 rm ~/tools/mender-test/*.mender
 ```
 
-### F.4 Re-deploying the Same Script
+### E.4 Re-deploying the Same Script
 
 Mender will not redeploy an artifact version that a device already reports as installed. When testing repeatedly, increment the artifact name rather than reusing it:
 
@@ -635,7 +635,7 @@ hello-test-v2
 hello-test-v3
 ```
 
-### F.5 Verify Removal
+### E.5 Verify Removal
 
 ```bash
 mender-cli artifacts list
