@@ -95,6 +95,20 @@ Runs `systemctl restart mender-connect`. Failures are suppressed so the artifact
 - `restart-mender-connect-v1.mender`
 - `restart-mender-connect-v2.mender`
 
+### `update-sn-f2-alias/`
+
+**Script** `update-sn-f2-alias.sh`
+
+Updates the `sn-board-f2` alias in `/home/nvidia/.bashrc` to the correct `i2ctransfer` form:
+
+```bash
+alias sn-board-f2="sudo i2ctransfer -f -y 1 w1@0x58 0x80 r16 | sed 's/0x//g'"
+```
+
+The script is idempotent — if the alias is already at the target definition it exits immediately. Otherwise it rewrites the existing `alias sn-board-f2=` line in place (dropping any trailing continuation line) and restores the original file ownership. If `.bashrc` does not exist the script exits without error.
+
+**Artifact** `update-sn-f2-alias-v1.mender`
+
 ### `send-cert-name/`
 
 **Script** `send-cert-name.sh`
